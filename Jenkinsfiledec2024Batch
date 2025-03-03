@@ -1,16 +1,10 @@
-node {
-def mavenHome = tool name: 'maven3.9.8'
-properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
+node{
+    
+def mavenHome= tool name:'maven3.9.8'
 
-echo "The Build Name is : ${env.BUILD_NUMBER}"
-echo "The Job Name is : ${env.JOB_NAME}"
-echo "The Node Name is : ${env.NODE_NAME}"
-echo "Work Space Path is : ${env.WORKSPACE}"
-echo "Jenkins default path is : ${env.JENKINS_HOME}"
-
-stage('CheckOutCode'){
-git branch: 'development', credentialsId: '44c38585-22f0-46a6-824e-b554438ba486', url: 'https://github.com/MithunTechProjects/maven-web-application.git'
-}
+stage('CheckOutCredentials'){
+git branch: 'development', credentialsId: 'GitHub Credentials',url: 'https://github.com/MithunTechProjects/maven-web-application.git'
+}//stage closeing 
 
 stage('Build'){
 sh "${mavenHome}/bin/mvn clean package"
@@ -20,14 +14,13 @@ stage('ExecuteSonarQubeReport'){
 sh "${mavenHome}/bin/mvn clean sonar:sonar"
 }
 
-stage('UploadArtifactsIntoNexus'){
+stage('UploadArtifactIntoArtifactRepo'){
 sh "${mavenHome}/bin/mvn clean deploy"
 }
-
-stage('DeployAppIntoTomactServer'){
-sshagent(['b0076135-a8d3-446e-9e71-aa13187c8960'])  {
-sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.16.111:/opt/apache-tomcat-9.0.98/webapps/"
+ stage("DeployAppIntoTomactServer") {
+sshagent(['8e4f3f4d-f414-4980-bf03-2439ed1d83f1']) {
+sh "scp -o  StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.46.238:/opt/apache-tomcat-9.0.98/webapps"
 }
 }
 */
-}
+}//node closeing
