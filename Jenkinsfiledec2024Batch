@@ -3,7 +3,11 @@ node{
 def mavenHome= tool name:'maven3.9.8'
 
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '5'))])
-
+echo "The Build Number is ${env.BUILD_NUMBER}"
+echo "The Job name is ${env.JOB_NAME}"
+echo "The node name is ${env.NODE_NAME}"
+echo "The worksapce path is ${env.WORKSPACE}"
+echo "Jenkins default path ${env.JENKINS_HOME}"
 stage('CheckOutCredentials'){
 git branch: 'development', credentialsId: 'GitHub Credentials',url: 'https://github.com/MithunTechProjects/maven-web-application.git'
 }//stage closeing 
